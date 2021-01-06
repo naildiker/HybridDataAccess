@@ -6,8 +6,8 @@ import org.hdm.core.objects.Column;
 import org.hdm.core.objects.IEntity;
 import org.hdm.core.objects.SupportedDataStore;
 import org.hdm.core.objects.Table;
-import org.hdm.data.service.helper.MsSqlServerHelper;
-import org.hdm.data.service.provider.MsSqlServerConnectionInfo;
+import org.hdm.data.service.helper.OracleHelper;
+import org.hdm.data.service.provider.OracleConnectionInfo;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -25,9 +25,8 @@ public class OracleMetaDataAdapter implements IHDMMetaDataAdapter
 	{
 		try
 		{
-			MsSqlServerConnectionInfo msSqlServerConnectionInfo = (MsSqlServerConnectionInfo)connectionInfo;
-			//Class.forName("com.microsoft.sqlserver.jdbc.SQLServerDriver");
-			con = DriverManager.getConnection(MsSqlServerHelper.generateConnectionString(msSqlServerConnectionInfo));
+			OracleConnectionInfo oracleConnectionInfo = (OracleConnectionInfo)connectionInfo;
+			con = DriverManager.getConnection(OracleHelper.generateConnectionString(oracleConnectionInfo));
 			return true;
 		}
 		catch(Exception exc)
@@ -40,7 +39,7 @@ public class OracleMetaDataAdapter implements IHDMMetaDataAdapter
 	public List<IEntity> getEntities()
 	{
 		List<IEntity> tableNames = new ArrayList<IEntity>();
-		String sql = "SELECT * FROM sys.tables";
+		String sql = "SELECT owner, table_name FROM user_tables;";
 		Statement stmt = null;
 		try
 		{
@@ -48,18 +47,20 @@ public class OracleMetaDataAdapter implements IHDMMetaDataAdapter
 			ResultSet rs = stmt.executeQuery(sql);
 			while (rs.next()) {
 				Table ent = new Table();
-				ent.setName(rs.getString("name"));
-				ent.setDbType(SupportedDataStore.MSSQLSERVER);
+				ent.setName(rs.getString("table_name"));
+				ent.setDbType(SupportedDataStore.ORACLE);
 
 
-				sql =  "SELECT * FROM sys.all_columns WHERE object_id = " + rs.getString("object_id");
+				sql =  "SELECT table_name, column_name, data_type, data_length\n" +
+						"FROM USER_TAB_COLUMNS\n" +
+						"WHERE table_name = '" + rs.getString("table_name") + "'";
 
 				Statement stmtColumns = con.createStatement();
 				ResultSet rsColumns = stmtColumns.executeQuery(sql);
 				while (rsColumns.next())
 				{
 					Column col =new Column();
-					col.setName(rsColumns.getString("name"));
+					col.setName(rsColumns.getString("column_name"));
 					ent.getColumns().add(col);
 				}
 				rsColumns.close();
