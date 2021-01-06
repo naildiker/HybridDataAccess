@@ -52,7 +52,6 @@ public class MongoDataProvider implements IHDMDataAdapter {
                     .into(new ArrayList<String>()).contains(nativeQueryText);
             if (collectionExists) {
                 MongoCollection<Document> collection = mongoDb.getCollection(nativeQueryText);
-                //FindIterable<Document> iterator = collection.find(or(eq("name","nail"),eq("surname", "nail")));
                 FindIterable<Document> iterator = collection.find().projection(
                         fields(and(include("surname", "name"), exclude("_id")))
                 );
