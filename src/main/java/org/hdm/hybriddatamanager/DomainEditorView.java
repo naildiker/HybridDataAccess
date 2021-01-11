@@ -15,6 +15,7 @@ import org.hdm.core.management.HdmManager;
 import org.hdm.core.objects.Attribute;
 import org.hdm.core.objects.Domain;
 import org.hdm.core.objects.Entity;
+import org.hdm.core.service.HDMDataCoordinatorService;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +27,8 @@ public class DomainEditorView extends VerticalLayout {
 
     Label titleLabel = new Label("İş Alanı Tanımlama");
     TextField name = new TextField("Adı :");
+
+    HDMDataCoordinatorService dataCoordinatorSrv = new HDMDataCoordinatorService();
 
     public DomainEditorView()
     {
@@ -42,13 +45,9 @@ public class DomainEditorView extends VerticalLayout {
 
     public void buttonClick(ClickEvent event) {
 
-        HdmManager hdmMan = new HdmManager();
         Domain domain = new Domain();
         domain.setName(name.getValue());
-        hdmMan.addDomain(domain);
-
-        hdmMan.persist();
-        hdmMan.disconnect();
+        boolean result = dataCoordinatorSrv.addDomain(domain);
 
     }
 }

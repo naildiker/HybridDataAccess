@@ -21,6 +21,7 @@ import com.vaadin.flow.router.Route;
 import org.apache.jena.ontology.Individual;
 import org.hdm.core.management.HdmManager;
 import org.hdm.core.objects.*;
+import org.hdm.core.service.HDMDataCoordinatorService;
 import org.hdm.data.service.adapter.MongoMetaDataAdapter;
 import org.hdm.data.service.adapter.MsSqlServerMetaDataAdapter;
 import org.hdm.data.service.provider.MongoConnectionInfo;
@@ -45,8 +46,8 @@ public class DataSourceEditorView extends VerticalLayout {
     MultiselectComboBox<IEntity> dsEntityComboBox = new MultiselectComboBox("Tablolar & Görüntüler");
     List<IEntity> selectedEntities = new ArrayList<>();
     DataModel dm = null;
-    HdmManager hdmMan = new HdmManager();
     List<IEntity> labels = new ArrayList<IEntity>();
+    HDMDataCoordinatorService dataCoordinatorSrv = new HDMDataCoordinatorService();
 
     public DataSourceEditorView()
     {
@@ -108,7 +109,7 @@ public class DataSourceEditorView extends VerticalLayout {
     }
 
     public void sButtonClick(ClickEvent event) {
-        Individual dsInstance = null;
+
         IDataStoreInstance dsi = null;
         if (dbTypeComboBox.getValue().equals(SupportedDataStore.MSSQLSERVER.toString())) {
             RelationalDataStoreInstance rdsi = new RelationalDataStoreInstance();
@@ -118,7 +119,6 @@ public class DataSourceEditorView extends VerticalLayout {
             rdsi.setUsername(username.getValue());
             rdsi.setPassword(password.getValue());
             rdsi.setDbType(SupportedDataStore.MSSQLSERVER);
-            dsInstance = (Individual) hdmMan.importDataStoreInstance(rdsi);
             dsi = rdsi;
 
 
@@ -129,30 +129,19 @@ public class DataSourceEditorView extends VerticalLayout {
             ddsi.setServerName(serverName.getValue());
             ddsi.setServerPort(String.valueOf(serverPort.getValue().intValue()));
             ddsi.setDbType(SupportedDataStore.MONGO);
-            dsInstance = (Individual) hdmMan.importDataStoreInstance(ddsi);
             dsi = ddsi;
-
-
         }
 
         dm = new DataModel();
         dm.setName(dmName.getValue());
         dm.setDbType(dsi.getDbType());
         dm.setDbName(dbName.getValue());
-        dm.setDataSourceInstance(dsi);
-        dm.setDsIndividual(dsInstance);
-        dm.setCurrentDsIndividual(dsInstance);
-        Individual dmInstance = (Individual) hdmMan.addDataModel(dm);
-        dm.setOwnIndividual(dmInstance);
 
-        hdmMan.importEntity(dm, selectedEntities);
-        hdmMan.persist();
-        hdmMan.disconnect();
+        Boolean result = dataCoordinatorSrv.addDataSource(dsi, dm, selectedEntities);
     }
 
     public void buttonClick(ClickEvent event) {
 
-        Individual dsInstance = null;
         IDataStoreInstance dsi = null;
         if (dbTypeComboBox.getValue().equals(SupportedDataStore.MSSQLSERVER.toString())) {
             RelationalDataStoreInstance rdsi = new RelationalDataStoreInstance();
@@ -161,17 +150,20 @@ public class DataSourceEditorView extends VerticalLayout {
             rdsi.setServerPort(String.valueOf(serverPort.getValue().intValue()));
             rdsi.setUsername(username.getValue());
             rdsi.setPassword(password.getValue());
+            rdsi.setCurrentDbName(dbName.getValue());
             rdsi.setDbType(SupportedDataStore.MSSQLSERVER);
             dsi = rdsi;
-
-            MsSqlServerMetaDataAdapter msSqlAdapter = new MsSqlServerMetaDataAdapter();
-            msSqlAdapter.connect(new MsSqlServerConnectionInfo(){{ setServerName(rdsi.getServerName()); setServerPort((int)Double.parseDouble(rdsi.getServerPort())); setDbName(dbName.getValue());
-                setUsername(rdsi.getUsername()); setPassword(rdsi.getPassword());}});
-            List<IEntity> sqlTableNames = msSqlAdapter.getEntities();
-
-            msSqlAdapter.close();
-            labels.addAll(sqlTableNames);
-
+        }
+        if (dbTypeComboBox.getValue().equals(SupportedDataStore.ORACLE.toString())) {
+            RelationalDataStoreInstance rdsi = new RelationalDataStoreInstance();
+            rdsi.setName(name.getValue());
+            rdsi.setServerName(serverName.getValue());
+            rdsi.setServerPort(String.valueOf(serverPort.getValue().intValue()));
+            rdsi.setUsername(username.getValue());
+            rdsi.setPassword(password.getValue());
+            rdsi.setCurrentDbName(dbName.getValue());
+            rdsi.setDbType(SupportedDataStore.ORACLE);
+            dsi = rdsi;
         }
         else if (dbTypeComboBox.getValue().equals(SupportedDataStore.MONGO.toString())) {
             DocumentDataStoreInstance ddsi = new DocumentDataStoreInstance();
@@ -179,26 +171,16 @@ public class DataSourceEditorView extends VerticalLayout {
             ddsi.setServerName(serverName.getValue());
             ddsi.setServerPort(String.valueOf(serverPort.getValue().intValue()));
             ddsi.setDbType(SupportedDataStore.MONGO);
+            ddsi.setCurrentDbName(dbName.getValue());
             dsi = ddsi;
-
-            MongoMetaDataAdapter mongoMetaAdapter = new MongoMetaDataAdapter();
-            mongoMetaAdapter.connect(new MongoConnectionInfo(){{ setServerName(ddsi.getServerName()); setServerPort((int)Double.parseDouble(ddsi.getServerPort()));  setDbName(dbName.getValue());}});
-            List<IEntity> docCollectionNames = mongoMetaAdapter.getEntities();
-            mongoMetaAdapter.close();
-            labels.addAll(docCollectionNames);
-
         }
+        List<IEntity> entityNames = dataCoordinatorSrv.getEntities(dsi);
+        labels.addAll(entityNames);
 
-        //hdmMan.queryInstances("RelationalDatabase");
         ListDataProvider<IEntity> dp = DataProvider.ofCollection(labels);
         dsEntityComboBox.setDataProvider(dp);
         dsEntityComboBox.setItemLabelGenerator(IEntity::getName);
         dsEntityComboBox.setWidth("700px");
-
-
-        //hdmMan.importEntity(dm, labels);
-        //hdmMan.persist();
-        //hdmMan.disconnect();
 
     }
 }

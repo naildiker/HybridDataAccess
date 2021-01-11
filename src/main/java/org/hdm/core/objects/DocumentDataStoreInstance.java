@@ -6,6 +6,7 @@ public class DocumentDataStoreInstance implements  IDataStoreInstance {
     private String name;
     private String serverName;
     private String serverPort;
+    private String currentDbName;
     private SupportedDataStore dbType;
     private List<String> collectionNames;
 
@@ -49,5 +50,13 @@ public class DocumentDataStoreInstance implements  IDataStoreInstance {
 
     public void setCollectionNames(List<String> collectionNames) {
         this.collectionNames = collectionNames;
+    }
+
+    public String getCurrentDbName() {
+        return currentDbName;
+    }
+
+    public void setCurrentDbName(String currentDbName) {
+        this.currentDbName = currentDbName;
     }
 }

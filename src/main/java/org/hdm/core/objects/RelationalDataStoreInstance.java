@@ -12,6 +12,7 @@ public class RelationalDataStoreInstance implements  IDataStoreInstance {
     private String dataModelType;
     private SupportedDataStore dbType;
     private List<String> dbNames;
+    private String currentDbName;
 
     public String getName() {
         return name;
@@ -77,5 +78,13 @@ public class RelationalDataStoreInstance implements  IDataStoreInstance {
 
     public void setDbNames(List<String> dbNames) {
         this.dbNames = dbNames;
+    }
+
+    public String getCurrentDbName() {
+        return currentDbName;
+    }
+
+    public void setCurrentDbName(String currentDbName) {
+        this.currentDbName = currentDbName;
     }
 }
