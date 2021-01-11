@@ -9,5 +9,5 @@ import java.util.List;
 public interface IHDMDataAccessService {
     public Object importDataStoreInstance(IDataStoreInstance dataStoreInstance);
     List<IEntity> getEntities(IDataStoreInstance dataStoreInstance);
-    List<IEntityOccurence> get(String nativeQueryText);
+    List<IEntityOccurence> get(IDataStoreInstance dataStoreInstance, String nativeQueryText);
 }

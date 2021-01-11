@@ -7,7 +7,9 @@ import org.apache.jena.rdf.model.Resource;
 import org.apache.jena.util.FileManager;
 import org.hdm.core.data.service.IHDMDataAccessService;
 import org.hdm.core.objects.*;
+import org.hdm.data.service.adapter.MongoDataProvider;
 import org.hdm.data.service.adapter.MongoMetaDataAdapter;
+import org.hdm.data.service.adapter.MsSqlServerDataProvider;
 import org.hdm.data.service.adapter.MsSqlServerMetaDataAdapter;
 import org.hdm.data.service.provider.MongoConnectionInfo;
 import org.hdm.data.service.provider.MsSqlServerConnectionInfo;
@@ -107,8 +109,35 @@ public class HDMDataAccessService implements IHDMDataAccessService {
     }
 
     @Override
-    public List<IEntityOccurence> get(String nativeQueryText) {
-        return null;
+    public List<IEntityOccurence> get(IDataStoreInstance dataStoreInstance, String nativeQueryText) {
+
+        List<IEntityOccurence> resultList = null;
+
+        if (dataStoreInstance.getDbType().equals(SupportedDataStore.MSSQLSERVER)) {
+            RelationalDataStoreInstance rdsi = (RelationalDataStoreInstance) dataStoreInstance;
+            MsSqlServerDataProvider msSqlAdapter = new MsSqlServerDataProvider();
+            MsSqlServerConnectionInfo connectionInfo = new MsSqlServerConnectionInfo();
+            connectionInfo.setServerName(rdsi.getServerName());
+            connectionInfo.setServerPort((int)Double.parseDouble(rdsi.getServerPort()));
+            connectionInfo.setDbName(rdsi.getCurrentDbName());
+            connectionInfo.setUsername(rdsi.getUsername());
+            connectionInfo.setPassword(rdsi.getPassword());
+            msSqlAdapter.connect(connectionInfo);
+            resultList = msSqlAdapter.get(nativeQueryText);
+            msSqlAdapter.close();
+        }
+        else if (dataStoreInstance.getDbType().equals(SupportedDataStore.MONGO)) {
+            DocumentDataStoreInstance ddsi = (DocumentDataStoreInstance) dataStoreInstance;
+            MongoDataProvider mongoDataProvider = new MongoDataProvider();
+            MongoConnectionInfo connectionInfo = new MongoConnectionInfo();
+            connectionInfo.setServerName(ddsi.getServerName());
+            connectionInfo.setServerPort((int) Double.parseDouble(ddsi.getServerPort()));
+            connectionInfo.setDbName(ddsi.getCurrentDbName());
+            mongoDataProvider.connect(connectionInfo);
+            resultList = mongoDataProvider.get(nativeQueryText);
+            mongoDataProvider.close();
+        }
+        return  resultList;
     }
 
     private void connect() {

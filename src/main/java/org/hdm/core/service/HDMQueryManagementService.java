@@ -8,11 +8,14 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.Literal;
 import org.apache.jena.rdf.model.Resource;
 import org.hdm.core.management.HdmManager;
+import org.hdm.core.objects.DocumentDataStoreInstance;
 import org.hdm.core.objects.IEntityOccurence;
+import org.hdm.core.objects.RelationalDataStoreInstance;
 import org.hdm.data.service.adapter.MongoDataProvider;
 import org.hdm.data.service.adapter.MsSqlServerDataProvider;
 import org.hdm.data.service.provider.MongoConnectionInfo;
 import org.hdm.data.service.provider.MsSqlServerConnectionInfo;
+import org.hdm.data.service.tenant.HDMDataAccessService;
 
 import java.util.List;
 
@@ -137,17 +140,16 @@ public class HDMQueryManagementService implements IHDMQueryManagementService {
                 nativeQueryText += " WHERE "+ nativeWhereClause;
             }
 
-            MsSqlServerDataProvider msSqlAdapter = new MsSqlServerDataProvider();
-            MsSqlServerConnectionInfo connectionInfo = new MsSqlServerConnectionInfo();
-            connectionInfo.setServerName(serverIP);
-            connectionInfo.setServerPort((int)Double.parseDouble(serverPort));
-            connectionInfo.setDbName(dbName);
-            connectionInfo.setUsername(serverUsername);
-            connectionInfo.setPassword(serverPassword);
-            msSqlAdapter.connect(connectionInfo);
-            List<IEntityOccurence> sqlValues = msSqlAdapter.get(nativeQueryText);
-            resultList.addAll(sqlValues);
-            msSqlAdapter.close();
+            HDMDataAccessService dataAccessService = new HDMDataAccessService();
+            RelationalDataStoreInstance rdsi = new RelationalDataStoreInstance();
+            rdsi.setServerName(serverIP);
+            rdsi.setServerPort(serverPort);
+            rdsi.setCurrentDbName(dbName);
+            rdsi.setUsername(serverUsername);
+            rdsi.setPassword(serverPassword);
+
+            resultList.addAll(dataAccessService.get(rdsi, nativeQueryText));
+
         }
         qe.close();
     }
@@ -230,15 +232,14 @@ public class HDMQueryManagementService implements IHDMQueryManagementService {
                 }
                 tableQe.close();
 
-                MongoDataProvider msSqlAdapter = new MongoDataProvider();
-                MongoConnectionInfo connectionInfo = new MongoConnectionInfo();
-                connectionInfo.setServerName(serverIP);
-                connectionInfo.setServerPort((int) Double.parseDouble(serverPort));
-                connectionInfo.setDbName(dbName);
-                msSqlAdapter.connect(connectionInfo);
-                List<IEntityOccurence> sqlValues = msSqlAdapter.get(collection);
-                resultList.addAll(sqlValues);
-                msSqlAdapter.close();
+                HDMDataAccessService dataAccessService = new HDMDataAccessService();
+
+                DocumentDataStoreInstance ddsi = new DocumentDataStoreInstance();
+                ddsi.setServerName(serverIP);
+                ddsi.setServerPort(serverPort);
+                ddsi.setCurrentDbName(dbName);
+
+                resultList.addAll(dataAccessService.get(ddsi, collection ));
             }
         }
         qe.close();
