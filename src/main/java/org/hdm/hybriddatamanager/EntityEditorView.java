@@ -33,15 +33,15 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @Route(value="entityEditor")
-@PageTitle("MELEZ VERİ ERİŞİM MODELİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class EntityEditorView extends VerticalLayout {
-    Label titleLabel = new Label("Entity Tanımlama");
-    TextField name = new TextField("Entity Adı :");
-    ComboBox<String> domainComboBox = new ComboBox<>("İş Alanı : ");
-    Label attributeLabel = new Label("Entity Nitelikleri");
-    TextField attributeName = new TextField("Nitelik :");
-    TextField attributeType = new TextField("Nitelik Tipi :");
-    MultiselectComboBox<String> dsAttributeComboBox = new MultiselectComboBox("Veri Modeli Örneği Nitelik(ler)i : ");
+    Label titleLabel = new Label("Entity Definition");
+    TextField name = new TextField("Entity Name :");
+    ComboBox<String> domainComboBox = new ComboBox<>("Business Domain : ");
+    Label attributeLabel = new Label("Entity Attributes");
+    TextField attributeName = new TextField("Attribute Name :");
+    TextField attributeType = new TextField("Attribute Type :");
+    MultiselectComboBox<String> dsAttributeComboBox = new MultiselectComboBox("Data Model Occurence Attributes : ");
     List<String> selectedAttributes = new ArrayList<>();
 
     Grid<Attribute> attributeGrid = new Grid<>();
@@ -52,7 +52,7 @@ public class EntityEditorView extends VerticalLayout {
 
     public EntityEditorView()
     {
-        UI.getCurrent().getPage().setTitle("MELEZ VERİ ERİŞİM ÇERÇEVESİ");
+        UI.getCurrent().getPage().setTitle("HYBRID DATA ACCESS APPLICATION");
 
         domainComboBox.setItems(dataCoordinatorSrv.getDomains());
 
@@ -70,15 +70,15 @@ public class EntityEditorView extends VerticalLayout {
             }
         });
         HorizontalLayout newAttributeLayout = new HorizontalLayout();
-        Button attributeButton = new Button("Ekle", VaadinIcon.PLUS.create());
+        Button attributeButton = new Button("Add", VaadinIcon.PLUS.create());
         attributeButton.setHeight("70px");
         attributeButton.addClickListener(this::attributeButtonClick);
         newAttributeLayout.add(attributeName, attributeType, dsAttributeComboBox, attributeButton);
         attributeGrid.setItems(entityAttributes);
         Grid.Column<Attribute> nameColumn = attributeGrid.addColumn(Attribute::getName)
-                .setHeader("Nitelik Adı");
+                .setHeader("Attribute Name");
 
-        Button saveButton = new Button("Kaydet",VaadinIcon.CHECK.create());
+        Button saveButton = new Button("Save",VaadinIcon.CHECK.create());
         saveButton.addClickListener(this::buttonClick);
 
 

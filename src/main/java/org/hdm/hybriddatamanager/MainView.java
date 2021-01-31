@@ -20,7 +20,7 @@ import java.util.TimerTask;
 
 
 @Route(value="home", layout = MainLayout.class)
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class MainView extends VerticalLayout {
     public MainView() {
         Label welcomeLabel = new Label();
@@ -29,46 +29,46 @@ public class MainView extends VerticalLayout {
             UI.getCurrent().navigate("login");
         else
         {
-            welcomeLabel.setText("Hoşgeldiniz "+VaadinSession.getCurrent().getAttribute("username"));
+            welcomeLabel.setText("Welcome "+VaadinSession.getCurrent().getAttribute("username"));
         }
 
         LoginOverlay component = new LoginOverlay();
-        component.setTitle("MELEZ VERİ ERİŞİM ÇERÇEVESİ");
-        component.setDescription("Ege Übiversitesi Bilgisayar Mühendisliği Bölümü");
+        component.setTitle("HYBRID DATA ACCESS APPLICATION");
+        component.setDescription("Ege University Computer Engineering Department");
         LoginI18n i18n = LoginI18n.createDefault();
-        i18n.getForm().setUsername("Kullanıcı Adı");
-        i18n.getForm().setPassword("Şifre");
-        i18n.getForm().setSubmit("Giriş");
-        i18n.getForm().setForgotPassword("Yeni Üyelik");
+        i18n.getForm().setUsername("Username");
+        i18n.getForm().setPassword("Password");
+        i18n.getForm().setSubmit("Login");
+        i18n.getForm().setForgotPassword("New Membership");
         i18n.setAdditionalInformation("");
         component.setI18n(i18n);
 
 //        Button open = new Button("Sisteme Giriş",
 //                e -> component.setOpened(true));
 
-        Label titleLabel = new Label("MELEZ VERİ ERİŞİM ÇERÇEVESİ");
+        Label titleLabel = new Label("HYBRID  DATA ACCESS APPLICATION");
         add(titleLabel);
 
         add(welcomeLabel);
         //add(open);
 
-        Button domainButton = new Button("İş Alanı Tanımlama", e -> UI.getCurrent().navigate("domainEditor"));
+        Button domainButton = new Button("Business Domain Definition", e -> UI.getCurrent().navigate("domainEditor"));
         domainButton.setWidth("300px");
         add(domainButton);
 
-        Button dsButton = new Button("Veri Kaynağı Tanımlama", e -> UI.getCurrent().navigate("dsEditor"));
+        Button dsButton = new Button("Data Source Definition", e -> UI.getCurrent().navigate("dsEditor"));
         dsButton.setWidth("300px");
         add(dsButton);
 
-        Button entityButton = new Button("Entity Tanımlama", e -> UI.getCurrent().navigate("entityEditor"));
+        Button entityButton = new Button("Entity Definition", e -> UI.getCurrent().navigate("entityEditor"));
         entityButton.setWidth("300px");
         add(entityButton);
 
-        Button searchButton = new Button("Entity Arama", e -> UI.getCurrent().navigate("searchEditor"));
+        Button searchButton = new Button("Entity Searcg", e -> UI.getCurrent().navigate("searchEditor"));
         searchButton.setWidth("300px");
         add(searchButton);
 
-        Button logOutButton = new Button("Çıkış", e -> {
+        Button logOutButton = new Button("Logout", e -> {
             VaadinSession.getCurrent().setAttribute("username", null);
             UI.getCurrent().navigate("login");});
         logOutButton.setWidth("300px");

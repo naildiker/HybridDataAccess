@@ -19,18 +19,18 @@ import org.hdm.core.objects.Domain;
 import java.util.List;
 
 @Route(value = "login")
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ - GİRİŞ SAYFASI")
+@PageTitle("HYBRID DATA ACCESS - LOGIN PAGE")
 public class LoginView extends VerticalLayout {
 
     public LoginView()
     {
         LoginForm component = new LoginForm();
         LoginI18n i18n = LoginI18n.createDefault();
-        i18n.getForm().setTitle("MEVER Üye Girişi");
-        i18n.getForm().setUsername("Kullanıcı Adı");
-        i18n.getForm().setPassword("Şifre");
-        i18n.getForm().setSubmit("Giriş");
-        i18n.getForm().setForgotPassword("Yeni Üyelik");
+        i18n.getForm().setTitle("Hybrid Data Acess Login Page");
+        i18n.getForm().setUsername("Username");
+        i18n.getForm().setPassword("Password");
+        i18n.getForm().setSubmit("Login");
+        i18n.getForm().setForgotPassword("New Membership");
         i18n.setAdditionalInformation("");
         component.setI18n(i18n);
 

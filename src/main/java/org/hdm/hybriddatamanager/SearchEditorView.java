@@ -29,11 +29,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(value="searchEditor")
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class SearchEditorView extends VerticalLayout {
-    Label titleLabel = new Label("Arama");
+    Label titleLabel = new Label("Search");
     ComboBox<String> entityComboBox = new ComboBox<>("Entity : ");
-    TextField name = new TextField("Anahtar Keiime :");
+    TextField name = new TextField("Keyword :");
 
     Grid<IEntityOccurence> resultGrid = new Grid<>();
 
@@ -44,10 +44,10 @@ public class SearchEditorView extends VerticalLayout {
     public SearchEditorView()
     {
 
-        Button saveButton = new Button("Ara",VaadinIcon.QUESTION.create());
+        Button saveButton = new Button("Search",VaadinIcon.QUESTION.create());
         saveButton.addClickListener(this::buttonClick);
         prepareEntities();
-        Grid.Column<IEntityOccurence> summaryColumn = resultGrid.addColumn(IEntityOccurence::toString).setHeader("Sonuçlar");
+        Grid.Column<IEntityOccurence> summaryColumn = resultGrid.addColumn(IEntityOccurence::toString).setHeader("Results");
         add(titleLabel, entityComboBox, name,  saveButton, resultGrid);
     }
 

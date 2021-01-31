@@ -13,20 +13,20 @@ import org.hdm.tenant.objects.Tenant;
 import org.hdm.tenant.service.HDMTenantService;
 
 @Route(value="signup")
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class SignUpView extends VerticalLayout {
 
 
-    Label titleLabel = new Label("MEVER Üyelik Bilgilieri");
-    TextField name = new TextField("Üye Ünvanı :");
-    TextField username = new TextField("Kullanıcı Adı :");
-    PasswordField password = new PasswordField("Şifre :");
-    PasswordField repassword = new PasswordField("Şifre (Tekrar) :");
+    Label titleLabel = new Label("Membership Information");
+    TextField name = new TextField("Member Title :");
+    TextField username = new TextField("Username :");
+    PasswordField password = new PasswordField("Password :");
+    PasswordField repassword = new PasswordField("Re-password :");
 
     public SignUpView()
     {
 
-        Button saveButton = new Button("Kaydet",VaadinIcon.CHECK.create());
+        Button saveButton = new Button("Save",VaadinIcon.CHECK.create());
         saveButton.addClickListener(this::buttonClick);
         add(titleLabel, name,  username, password, repassword, saveButton);
 

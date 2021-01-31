@@ -11,6 +11,7 @@ import org.hdm.core.management.HdmManager;
 import org.hdm.core.objects.DocumentDataStoreInstance;
 import org.hdm.core.objects.IEntityOccurence;
 import org.hdm.core.objects.RelationalDataStoreInstance;
+import org.hdm.core.objects.SupportedDataStore;
 import org.hdm.data.service.adapter.MongoDataProvider;
 import org.hdm.data.service.adapter.MsSqlServerDataProvider;
 import org.hdm.data.service.provider.MongoConnectionInfo;
@@ -147,7 +148,7 @@ public class HDMQueryManagementService implements IHDMQueryManagementService {
             rdsi.setCurrentDbName(dbName);
             rdsi.setUsername(serverUsername);
             rdsi.setPassword(serverPassword);
-
+            rdsi.setDbType(SupportedDataStore.MSSQLSERVER);
             resultList.addAll(dataAccessService.get(rdsi, nativeQueryText));
 
         }
@@ -238,7 +239,7 @@ public class HDMQueryManagementService implements IHDMQueryManagementService {
                 ddsi.setServerName(serverIP);
                 ddsi.setServerPort(serverPort);
                 ddsi.setCurrentDbName(dbName);
-
+                ddsi.setDbType(SupportedDataStore.MONGO);
                 resultList.addAll(dataAccessService.get(ddsi, collection ));
             }
         }

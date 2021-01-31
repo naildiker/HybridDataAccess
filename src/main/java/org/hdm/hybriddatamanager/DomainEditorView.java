@@ -21,19 +21,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Route(value="domainEditor")
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class DomainEditorView extends VerticalLayout {
 
 
-    Label titleLabel = new Label("İş Alanı Tanımlama");
-    TextField name = new TextField("Adı :");
+    Label titleLabel = new Label("Business Domain Definition");
+    TextField name = new TextField("Domain Name :");
 
     HDMDataCoordinatorService dataCoordinatorSrv = new HDMDataCoordinatorService();
 
     public DomainEditorView()
     {
 
-        Button saveButton = new Button("Kaydet",VaadinIcon.CHECK.create());
+        Button saveButton = new Button("Save",VaadinIcon.CHECK.create());
         saveButton.addClickListener(this::buttonClick);
         add(titleLabel, name,  saveButton);
 

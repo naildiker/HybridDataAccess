@@ -31,19 +31,19 @@ import org.vaadin.gatanaso.MultiselectComboBox;
 import java.util.*;
 
 @Route(value="dsEditor")
-@PageTitle("MELEZ VERİ ERİŞİM ÇERÇVESİ")
+@PageTitle("HYBRID DATA ACCESS APPLICATION")
 public class DataSourceEditorView extends VerticalLayout {
-    Label titleLabel = new Label("Veri Kaynağı Tanımlama");
-    TextField name = new TextField(" Veri Kaynağı Adı");
-    TextField serverName = new TextField("Sunucu Adı / IP");
+    Label titleLabel = new Label("DBMS Server Definition");
+    TextField name = new TextField(" DBMS Server Name");
+    TextField serverName = new TextField("Server Name / IP");
     NumberField serverPort = new NumberField("Port");
-    TextField username = new TextField("Kullanıcı Adı");
-    PasswordField password = new PasswordField("Şifre");
-    Label dmLabel = new Label("Veri Modeli Örneği Tanımlama");
-    TextField dmName = new TextField("Veri Modeli Örneği Adı:");
-    TextField dbName = new TextField("Veritabanı Adı");
-    ComboBox<String> dbTypeComboBox = new ComboBox<>("Veritabanı Yönetim Sistemi");
-    MultiselectComboBox<IEntity> dsEntityComboBox = new MultiselectComboBox("Tablolar & Görüntüler");
+    TextField username = new TextField("Username");
+    PasswordField password = new PasswordField("Password");
+    Label dmLabel = new Label("Data Model Occurence Definition");
+    TextField dmName = new TextField("Data Model Occurence Name");
+    TextField dbName = new TextField("Database Name");
+    ComboBox<String> dbTypeComboBox = new ComboBox<>("DBMS");
+    MultiselectComboBox<IEntity> dsEntityComboBox = new MultiselectComboBox("Tables & Views");
     List<IEntity> selectedEntities = new ArrayList<>();
     DataModel dm = null;
     List<IEntity> labels = new ArrayList<IEntity>();
@@ -68,7 +68,16 @@ public class DataSourceEditorView extends VerticalLayout {
                                                           serverPort.setValue(1433.0);
                                                           username.setEnabled(true);
                                                           password.setEnabled(true);
-                                                          dsEntityComboBox.setLabel("Tablolar & Görüntüler");
+                                                          dsEntityComboBox.setLabel("Tables & Views");
+                                                      }
+                                                      else  if (dbTypeComboBox.getValue().equals(SupportedDataStore.ORACLE.toString()))
+                                                      {
+                                                          username.setValue("system");
+                                                          password.setValue("systempass");
+                                                          serverPort.setValue(1521.0);
+                                                          username.setEnabled(true);
+                                                          password.setEnabled(true);
+                                                          dsEntityComboBox.setLabel("Tables & Views");
                                                       }
                                                       else
                                                       {
@@ -77,7 +86,7 @@ public class DataSourceEditorView extends VerticalLayout {
                                                           serverPort.setValue(27017.0);
                                                           username.setEnabled(false);
                                                           password.setEnabled(false);
-                                                          dsEntityComboBox.setLabel("Kolleksiyonlar");
+                                                          dsEntityComboBox.setLabel("Collections");
                                                       }
                                                   }
                                               });
@@ -87,8 +96,8 @@ public class DataSourceEditorView extends VerticalLayout {
         dbName.setValue("BP");
         username.setValue("sa");
         password.setValue("sapass");
-        Button saveButton = new Button("Kaydet",VaadinIcon.CHECK.create());
-        Button retriveButton = new Button("Tabloları & Görüntüleri Getir",VaadinIcon.TRUCK.create());
+        Button saveButton = new Button("Save",VaadinIcon.CHECK.create());
+        Button retriveButton = new Button("Get Collections",VaadinIcon.TRUCK.create());
         add(titleLabel, name, dbTypeComboBox, serverName, serverPort,  username, password, dmLabel, dmName, dbName, retriveButton, dsEntityComboBox, saveButton);
 
         saveButton.addClickListener(this::sButtonClick);
